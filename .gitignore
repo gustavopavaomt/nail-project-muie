@@ -42,5 +42,12 @@ public/sw.js
 public/workbox-*.js
 public/worker-*.js
 
-# Supabase
-supabase/.temp/
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+*-service-account*.json
+
+# Print copiado pra /public so pra pagina /tokens comparar (original em ref/)
+public/_ref/
