@@ -72,4 +72,97 @@ body {
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  /* PWA e mobile-first: sem realce azul no toque e sem selecao acidental de texto
+     ao segurar o dedo. Inputs e areas de leitura reabilitam quando precisarem. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Bottom sheet ----------
+   Estilo fica aqui e nao em classe utilitaria porque ::backdrop e um
+   pseudo-elemento do <dialog>, fora do alcance do Tailwind.
+
+   A curva cubic-bezier(.32,.72,0,1) e a de "entrada decisiva" do iOS: acelera
+   forte e desacelera longo. Um ease-out comum deixa o painel com cara de menu web
+   caindo, nao de sheet subindo. */
+dialog.sheet {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+/* CUIDADO: o display precisa ficar preso ao [open].
+   O UA stylesheet esconde dialog fechado com `dialog:not([open]){display:none}`.
+   Um `display:flex` solto em `dialog.sheet` tem especificidade maior e vence
+   ate fechado — o sheet vira um retangulo transparente de tela inteira comendo
+   todos os cliques da pagina, sem nada visivel denunciando. */
+dialog.sheet[open] {
+  display: flex;
+}
+
+dialog.sheet::backdrop {
+  background: rgb(30 30 30 / 0.45);
+  animation: sheet-backdrop-in 0.25s ease forwards;
+}
+
+dialog.sheet[data-state="closing"]::backdrop {
+  animation: sheet-backdrop-out 0.2s ease forwards;
+}
+
+dialog.sheet .sheet-panel {
+  animation: sheet-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: 0 -8px 32px rgb(30 30 30 / 0.14);
+}
+
+dialog.sheet[data-state="closing"] .sheet-panel {
+  animation: sheet-out 0.2s ease-in forwards;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-backdrop-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog.sheet .sheet-panel,
+  dialog.sheet::backdrop {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* O wheel de horario rola, mas barra de rolagem visivel num picker denuncia que e
+   web. Esconder mantem o gesto e tira o ruido. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
