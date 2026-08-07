@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, MoreHorizontal } from "lucide-react";
+import { ArrowLeft, MessageCircle, MoreHorizontal, X } from "lucide-react";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { SheetItem } from "@/components/ui/sheet-item";
+import { whatsappLink } from "@/lib/studio";
 
 /*
   Header do funil de agendamento. No print e so "<-" a esquerda e "..." a direita,
@@ -14,26 +18,56 @@ import { ArrowLeft, MoreHorizontal } from "lucide-react";
 */
 export function FlowHeader() {
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="flex items-center justify-between px-4 py-3">
-      <button
-        type="button"
-        onClick={() => router.back()}
-        aria-label="Voltar"
-        className="text-ink -ml-2 flex size-10 items-center justify-center rounded-full"
-      >
-        <ArrowLeft size={20} aria-hidden="true" />
-      </button>
+    <>
+      <header className="flex items-center justify-between px-4 py-3">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          aria-label="Voltar"
+          className="text-ink active:bg-primary-50 -ml-2 flex size-10 items-center justify-center rounded-full transition-colors"
+        >
+          <ArrowLeft size={20} aria-hidden="true" />
+        </button>
 
-      {/* TODO: abre um menu (cancelar agendamento, falar no WhatsApp) — Sprint 3 */}
-      <button
-        type="button"
-        aria-label="Mais opções"
-        className="text-muted -mr-2 flex size-10 items-center justify-center rounded-full"
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Mais opções"
+          aria-haspopup="dialog"
+          aria-expanded={menuOpen}
+          className="text-muted active:bg-primary-50 -mr-2 flex size-10 items-center justify-center rounded-full transition-colors"
+        >
+          <MoreHorizontal size={20} aria-hidden="true" />
+        </button>
+      </header>
+
+      <BottomSheet
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        title="Precisa de ajuda?"
       >
-        <MoreHorizontal size={20} aria-hidden="true" />
-      </button>
-    </header>
+        <nav className="flex flex-col pb-2">
+          <SheetItem
+            icon={MessageCircle}
+            label="Falar no WhatsApp"
+            href={whatsappLink("Oi! Estou agendando pelo app e preciso de ajuda")}
+          />
+          {/* Desistir e uma saida legitima: escondida atras do "...", mas sem
+              fricção artificial quando a cliente decide sair. */}
+          <SheetItem
+            icon={X}
+            label="Cancelar agendamento"
+            tone="danger"
+            onClick={() => {
+              setMenuOpen(false);
+              router.push("/agendar");
+            }}
+          />
+        </nav>
+      </BottomSheet>
+    </>
   );
 }
