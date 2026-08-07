@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/*
+  DESIGN TOKENS — Sprint 1.2
+  Fonte da verdade: ref/src/prints/image-referencia.png
+  ref/src/02_DESIGN_SYSTEM.md e a base, mas esta incompleto (so 6 cores chapadas,
+  uma fonte, sem radius nem sombra). Onde os dois divergem, o print vence.
+
+  Valores marcados com "// print" foram amostrados dos pixels do print.
+
+  Por que `static`: o @theme normal so emite no :root as variaveis que algum
+  utilitario usa. Como vamos consumir token direto em CSS (gradiente do mauve,
+  box-shadow, canvas do dashboard) e nao so via classe, precisamos das variaveis
+  sempre presentes. Sem `static`, --color-primary-50 e cia. somem do bundle e
+  qualquer var(--color-primary-50) resolve pra nada. Custa alguns bytes.
+*/
+@theme static {
+  /* ---------- Tipografia ---------- */
+  /* Inter: interface. Playfair: wordmark e headlines (o .md nao previa a serifada). */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+
+  /* ---------- Primaria ---------- */
+  /* Pivo 500 = #C26A8A, o valor do .md — confirmado no print (dia selecionado
+     amostrou #C67187). A escala e hsl(338, ~42%, L) variando so a luminosidade. */
+  --color-primary-50: #fdeef2; /* print: badge "Faltam 3 dias", tiles do acesso rapido */
+  --color-primary-100: #f9dde4;
+  --color-primary-200: #f0c4d0; /* print: dias disponiveis no calendario */
+  --color-primary-300: #e3a3b6;
+  --color-primary-400: #d4899f; /* print: slot de horario selecionado */
+  --color-primary-500: #c26a8a; /* print: botoes, dia selecionado, icones */
+  --color-primary-600: #b55175; /* print: "no seu tempo.", barras da agenda */
+  --color-primary-700: #96405f; /* print: fatias escuras do donut */
+  --color-primary-800: #78334c;
+  --color-primary-900: #5d283b;
+  --color-primary: var(--color-primary-500);
+
+  /* ---------- Mauve ---------- */
+  /* Header da area da cliente. NAO e a primaria clareada: hsl(327,30%,72%) contra
+     hsl(338,42%,59%) — mais roxo e menos saturado. Usar primary-300 aqui sai errado. */
+  --color-mauve-from: #c89bb8;
+  --color-mauve-to: #d6afc6;
+
+  /* ---------- Semanticas ---------- */
+  --color-gold: #e8b45c; /* barras da agenda, donut, nivel Ouro da fidelidade */
+  --color-success: #30a97c; /* icone de "Faturamento hoje" */
+
+  /* ---------- Superficies ---------- */
+  --color-surface: #fff8f7; /* fundo do app */
+  --color-card: #ffffff;
+  --color-ink: #1e1e1e; /* texto principal */
+  --color-muted: #666666; /* texto secundario */
+  --color-line: #ececec; /* bordas e divisores */
+
+  /* Sidebar do dashboard. Cuidado: nao e o #1E1E1E, que no .md e cor de *texto*. */
+  --color-sidebar: #222528;
+  --color-sidebar-active: #33373b;
+  --color-sidebar-ink: #f4f2f2;
+
+  /* ---------- Raio ---------- */
+  --radius-sm: 8px; /* botao, input */
+  --radius-md: 12px; /* card, tile */
+  --radius-lg: 16px; /* bottom sheet, hero */
+
+  /* ---------- Elevacao ---------- */
+  /* Um nivel so. O print e quase flat: os cards se separam do fundo creme por
+     uma sombra que mal se ve, nao por profundidade. */
+  --shadow-card: 0 1px 2px rgb(30 30 30 / 0.04), 0 4px 12px rgb(30 30 30 / 0.05);
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
